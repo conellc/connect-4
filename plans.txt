@@ -25,9 +25,11 @@ void printBoard(*char board[ROWS][COLUMNS]){
   #Author: Ethan
 }
 
-int checkWin(*char board[ROWS][COLUMNS]){
-  #Check for horizontal, vertical, and diagonal victories
-  #Return 0 for no victory, 1 for red victory, 2 for yellow victory
+int checkLinks(*char board[ROWS][COLUMNS], int linkLength){
+  #Could you instead change the code to check for a link of length linkLength instead of just 4?
+  #This could be useful for the AI to check if the player is close to winning.
+  #Return int array { {(link 1) {row1, column1}, {row2, column2}}, {(link 2) {row1, column1}, {row2, column2}} }
+  #Let main or aiMove decide what color the links are after the call
   #Author: Ryan
 }
 
