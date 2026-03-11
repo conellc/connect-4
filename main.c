@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-// Colors for printing
-// How to use: printf(RED"This will be red"WHITE) <- put white after to reset color. it works because you can use seperate strings in printf if they are together. printf("this"" works ""too")
-#define WHITE "\e[0m"
-#define RED "\e[1;31m"
-#define GREEN "\e[1;32m"
-#define YELLOW "\e[1;33m"
-#define BLUE "\e[1;34m"
-#define MAGENTA "\e[1;35m"
+#include <string.h>
+#include "colors.h"
 
 #define ROWS 6
 #define COLUMNS 7
@@ -19,25 +12,30 @@
 #define YELLOWSLOT 'y'
 #define REDSLOT 'r'
 
+// Main methods
+void printBoard(char* board);
+int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords);
+int makeMove(char *board, int move, char turn);
+int aiMove(char* board, int difficulty);
+int noPossibleMoves(char *board);
+int getRowFromColumn(char *board, int column);
+
 // Helper methods
 char getBoardSlot(char* board, int row, int column);
 void setBoardSlot(char* board, int row, int column, char value);
 void changeOutputCoords(int *outputCoords, int row, int column, int value);
-
-// Main methods
-void printBoard(char* board);
-int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords); // I can't return an int array but I can modify an int array input
-int makeMove(char* board, int column, char turn);
-int aiMove(char* board, int difficulty);
+void copyBoard(char *board1, char *board2);
+int maxOfInts(int a, int b);
 
 int main(){
+    srand(time(NULL));
     // Test to see if makeMove and column check works (You can delete this)
     char test[ROWS][COLUMNS] = {
+      {'y', 'n', 'n', 'n', 'n', 'n', 'n'},
+      {'n', 'y', 'n', 'n', 'n', 'n', 'n'},
+      {'n', 'n', 'y', 'n', 'n', 'n', 'n'},
       {'n', 'n', 'n', 'n', 'n', 'n', 'n'},
-      {'n', 'n', 'n', 'n', 'n', 'n', 'n'},
-      {'n', 'n', 'n', 'n', 'n', 'n', 'n'},
-      {'n', 'n', 'n', 'y', 'n', 'n', 'n'},
-      {'n', 'n', 'n', 'y', 'n', 'n', 'n'},
+      {'n', 'n', 'n', 'r', 'n', 'n', 'n'},
       {'n', 'n', 'n', 'y', 'n', 'n', 'n'}
     };
     int column = 3, linkLength = 4;
@@ -45,6 +43,7 @@ int main(){
     int lastMove[2] = {row, column};
     int outputCoords[linkLength][2];
     int won = checkLinks(&test[0][0], linkLength, lastMove, &outputCoords[0][0]);
+    printf("%d\n", won);
 
     return 0;
 }
@@ -53,27 +52,17 @@ void printBoard(char* board_pointer){
 
 }
 
-// I would recommend making functions comments like what I have for your functions so we know what they do. Explain parameters and what it returns
-
-/* NOT DONE YET, WIP (column check is done)
+/*
     *board - the 2d array of the board as a pointer
     linkLength - the length needed to win
-    *lastMove[2] - the last move {row, column} as a pointer (I could probably make this not a pointer since I don't change it)
+    lastMove[2] - the last move {row, column}
     *outputCoords[linkLength][2] - the coordinates of the winning line. OutputCoords should be arr[linkLength][2] and passed as &arr[0][0]. To use, first check if this returns 1. 
                                    If you want to get the winner (if you aren't using a variable for the turn) you can get the winner by using any of the coords and getting the character at the coord.
 
-    returns 1 if the last move caused a win, 0 otherwise
+    returns: 0 - no win, 1 - Column win, 2 - Row win, 3 - left->right diagonal win, 4 - right->left diagonal win
 */
-int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords){
-    /* Could you modify this code to check for an arbitrary length instead of just 4? 
-    Instead of returning just who won, you could return an int array with the syntax
-    {{{row1, column1}, {row2, column2}...} ... } where it's a 3D array containing 2D
-    arrays with the found links containing 1D arrays with the row and column of the circles.            <- I don't know what you mean by this but hopefully the outputCoords parameter works
-    
-    It looks harder, but it shouldn't be that much of a change to the internal logic you'd have
-    to use to find the links anyways. It'll help a lot with the AI.*/
-
-
+int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords) {
+    // Check win based on last move
     int i;
     int won = 0;
     int inARow = 1;
@@ -81,9 +70,9 @@ int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords){
     int moveRow = *lastMove;
     int moveCol = *(lastMove + 1);
     char turn = getBoardSlot(board, moveRow, moveCol);
-
+    
     // Check column
-    if (moveRow >= linkLength - 1)
+    if (moveRow >= linkLength - 1) // Optimization
         won = 0;
     else {
         changeOutputCoords(outputCoords, 0, 0, moveRow);
@@ -94,9 +83,7 @@ int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords){
                 changeOutputCoords(outputCoords, inARow - 1, 0, i);
                 changeOutputCoords(outputCoords, inARow - 1, 1, moveCol);
                 if (inARow >= linkLength) {
-                    won = 1;
-                    printf("Column win\n"); // Info msg (can be deleted)
-                    break;
+                    return 1;
                 }
             }
             else {
@@ -108,7 +95,134 @@ int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords){
             }
         }
     }
+    // Check column end
+    
+    moveRow = *lastMove;
+    moveCol = *(lastMove + 1);
+    inARow = 0;
+
+    // Check row
+    while (moveCol > 0) {
+        moveCol--;
+        if (getBoardSlot(board, moveRow, moveCol) != turn) {
+            moveCol++;
+             break;
+        }
+    }
+
+    for (i = moveCol; i < COLUMNS; i++) {
+        if (getBoardSlot(board, moveRow, i) == turn) {
+            inARow++;
+            changeOutputCoords(outputCoords, inARow - 1, 0, moveRow);
+            changeOutputCoords(outputCoords, inARow - 1, 1, i);
+            if (inARow >= linkLength) {
+                return 2;
+            }
+        } else {
+            for (i = 0; i < linkLength; i++) {
+                changeOutputCoords(outputCoords, i, 0, 0);
+                changeOutputCoords(outputCoords, i, 1, 0);
+            }
+            break;
+        }
+    }
+    // Check row end
+
+    moveRow = *lastMove;
+    moveCol = *(lastMove + 1);
+    inARow = 0;
+
+    // Check left->right diagonal
+    while (moveRow > 0 && moveCol > 0) {
+        moveRow--;
+        moveCol--;
+        if (getBoardSlot(board, moveRow, moveCol) != turn) {
+            moveRow++;
+            moveCol++;
+            break;
+        }
+    }
+
+    for (i = 0; moveRow + i < ROWS && moveCol + i < COLUMNS; i++) {
+        if (getBoardSlot(board, moveRow + i, moveCol + i) == turn) {
+            inARow++;
+            changeOutputCoords(outputCoords, inARow - 1, 0, moveRow + i);
+            changeOutputCoords(outputCoords, inARow - 1, 1, moveCol + i);
+            if (inARow >= linkLength) {
+                return 3;
+            }
+        } else {
+            for (i = 0; i < linkLength; i++) {
+                changeOutputCoords(outputCoords, i, 0, 0);
+                changeOutputCoords(outputCoords, i, 1, 0);
+            }
+            break;
+        }
+    }
+    // Check left->right diagonal end
+
+    moveRow = *lastMove;
+    moveCol = *(lastMove + 1);
+    inARow = 0;
+
+    // Check right->left diagonal
+    while (moveRow > 0 && moveCol < COLUMNS - 1) {
+        moveRow--;
+        moveCol++;
+        if (getBoardSlot(board, moveRow, moveCol) != turn) {
+            moveRow++;
+            moveCol--;
+            break;
+        }
+    }
+
+    for (i = 0; moveRow + i < ROWS && moveCol - i >= 0; i++) {
+        if (getBoardSlot(board, moveRow + i, moveCol - i) == turn) {
+            inARow++;
+            changeOutputCoords(outputCoords, inARow - 1, 0, moveRow + i);
+            changeOutputCoords(outputCoords, inARow - 1, 1, moveCol - i);
+            if (inARow >= linkLength) {
+                return 4;
+            }
+        } else {
+            for (i = 0; i < linkLength; i++) {
+                changeOutputCoords(outputCoords, i, 0, 0);
+                changeOutputCoords(outputCoords, i, 1, 0);
+            }
+            break;
+        }
+    }
+    // Check right->left diagonal end
+
     return won;
+}
+
+/*
+    board -> pointer to the board
+
+    returns 1 if there are no possible moves on the board (All spots are filled), 0 otherwise.
+*/
+int noPossibleMoves(char *board) {
+    int i;
+    for (i = 0; i < COLUMNS; i++) {
+        if (getBoardSlot(board, 0, i) == EMPTYSLOT)
+            return 0;
+    }
+    return 1;
+}
+
+/*
+    char board -> pointer to board
+    int column -> column to get row at
+
+    returns the row that is lowest at a given column
+*/
+int getRowFromColumn(char *board, int column) {
+    int rowPos = ROWS - 1;
+    while (getBoardSlot(board, rowPos, column) != EMPTYSLOT && rowPos > 0) {
+        rowPos--;
+    }
+    return rowPos;
 }
 
 /*
@@ -156,4 +270,24 @@ void setBoardSlot(char* board, int row, int column, char value) {
 */
 void changeOutputCoords(int *outputCoords, int row, int column, int value) {
     *(outputCoords + row * 2 + column) = value;
+}
+
+/*
+    Copies one board to another so you can modify it without modifying the original.
+
+    board1 -> The board to copy frmo
+    board2 -> The board to copy to
+*/
+void copyBoard(char *board1, char *board2) {
+    int i, j;
+    for (i = 0; i < ROWS; i++) {
+        for (j = 0; j < COLUMNS; j++) {
+            setBoardSlot(board2, i, j, getBoardSlot(board1, i, j));
+        }
+    }
+}
+
+// Returns the max of 2 ints
+int maxOfInts(int a, int b) {
+    return a > b ? a : b;
 }
