@@ -41,7 +41,7 @@ int main(){
     int column = 3, linkLength = 4;
     int row = makeMove(&test[0][0], column, 'y');
     int lastMove[2] = {row, column};
-    int outputCoords[linkLength][2];
+    int outputCoords[4][2]; //We'll set it to 4 because that's the max the link length should be anyways
     int won = checkLinks(&test[0][0], linkLength, lastMove, &outputCoords[0][0]);
     printf("%d\n", won);
 
