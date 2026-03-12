@@ -247,7 +247,46 @@ int makeMove(char *board, int move, char turn) {
 }
 
 int aiMove(char* board_pointer, int difficulty){
-
+    if (difficulty == 1){
+        char boardA[ROWS][COLUMNS];
+        char *boardPtr = &boardA[0][0];
+        copyBoard(board, boardPtr);
+    
+        int choices[COLUMNS];
+        int i, col, row, win, links;
+        char slot;
+    
+        for (i = 0; i < COLUMNS; i++) {
+            choices[i] = 0;
+        }
+    
+        for (links = 4; links > 1; links--) {
+            for (col = 0; col < COLUMNS; col++) {
+                for(i = 0; i < 2; i++) {
+                    copyBoard(board, boardPtr);
+                    slot = i == 0 ? YELLOWSLOT : REDSLOT;
+                    row = makeMove(boardPtr, col, slot);
+                    if (row == -1) continue;
+                    int move[] = {row, col};
+                    int outputCoords[links][2];
+                    win = checkLinks(boardPtr, links, &move[0], &outputCoords[0][0]);
+                    if (win > 0) choices[col] += links * (links == 4 ? 4 : 1); // If 2, 4 in a rows can be made make own first
+                }
+            }
+        }
+    
+        int maxIndex = 0, sum = choices[0];
+        printf(BLUE"%d ", sum);
+        for (i = 1; i < COLUMNS; i++) {
+            int a = maxOfInts(choices[maxIndex], choices[i]);
+            if (choices[maxIndex] != a) maxIndex = i;
+            sum += choices[i];
+            printf("%d ", choices[i]);
+        }
+        printf("\n"WHITE);
+        if (sum == 0) return -1;
+        return maxIndex;
+    }
 
     return 0;
 }
@@ -293,42 +332,5 @@ int maxOfInts(int a, int b) {
 }
 
 int getOkMove(char *board) {
-    char boardA[ROWS][COLUMNS];
-    char *boardPtr = &boardA[0][0];
-    copyBoard(board, boardPtr);
-
-    int choices[COLUMNS];
-    int i, col, row, win, links;
-    char slot;
-
-    for (i = 0; i < COLUMNS; i++) {
-        choices[i] = 0;
-    }
-
-    for (links = 4; links > 1; links--) {
-        for (col = 0; col < COLUMNS; col++) {
-            for(i = 0; i < 2; i++) {
-                copyBoard(board, boardPtr);
-                slot = i == 0 ? YELLOWSLOT : REDSLOT;
-                row = makeMove(boardPtr, col, slot);
-                if (row == -1) continue;
-                int move[] = {row, col};
-                int outputCoords[links][2];
-                win = checkLinks(boardPtr, links, &move[0], &outputCoords[0][0]);
-                if (win > 0) choices[col] += links * (links == 4 ? 4 : 1); // If 2, 4 in a rows can be made make own first
-            }
-        }
-    }
-
-    int maxIndex = 0, sum = choices[0];
-    printf(BLUE"%d ", sum);
-    for (i = 1; i < COLUMNS; i++) {
-        int a = maxOfInts(choices[maxIndex], choices[i]);
-        if (choices[maxIndex] != a) maxIndex = i;
-        sum += choices[i];
-        printf("%d ", choices[i]);
-    }
-    printf("\n"WHITE);
-    if (sum == 0) return -1;
-    return maxIndex;
+    
 }
