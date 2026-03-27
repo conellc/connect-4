@@ -1,20 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
-
-#include "connect4.h"
-#include "colors.h"
 #include "printBoard.h"
+#include "colors.h"
+#include "connect4.h"
+
+int getColumn();
+int getOkMove(char *board);
+int getRandomMove(char *board);
+int getAIMode();
+void clearBoard(char* board);
 
 // Main methods
-void clearBoard(char* board);
 int checkLinks(char* board, int linkLength, int *lastMove, int *outputCoords);
 int makeMove(char *board, int move, char turn);
 int aiMove(char* board, int difficulty);
 int noPossibleMoves(char *board);
 int getRowFromColumn(char *board, int column);
-int getOkMove(char *board);
 // Helper methods
 char getBoardSlot(char* board, int row, int column);
 void setBoardSlot(char* board, int row, int column, char value);
@@ -23,15 +25,59 @@ void copyBoard(char *board1, char *board2);
 int maxOfInts(int a, int b);
 
 int main(){
-    srand(time(NULL));
+	srand(time(NULL));
 
-    char board[ROWS][COLUMNS];
-    char *boardPtr = &board[0][0];
+	char board[ROWS][COLUMNS];
+    char* boardPtr = &board[0][0];
     clearBoard(boardPtr);
-    printBoard(board);
 
+    int turn = 0;
+    
+    int rowPos, requiredInARow = 4;
+    int outputCoords[requiredInARow][2];
+    int move;
+
+    int aiDiff = getAIMode(); // AI difficulty, -1 is no AI.
+
+    while (1) {
+        if ((aiDiff != -1 && turn == 0) || aiDiff == -1) { // If its AI and the player's turn or 2 player.
+            printBoard(board);
+            printf("\n");
+        }
+        if (aiDiff < 0) { // If its not AI
+            printf("%s's turn\n", turn == 0 ? "Yellow" : "Red"); // Turn 0 is yellow, turn 1 is red
+            move = getColumn();
+        } else { // If it is AI
+            if (turn == 0) { // If its the player's turn
+                printf("Your turn\n");
+                move = getColumn();
+            } else { // If its the AI's turn
+                move = aiMove(boardPtr, aiDiff);
+                rowPos = getRowFromColumn(boardPtr, move);
+            }
+        }
+        rowPos = makeMove(boardPtr, move, turn == 0 ? YELLOWSLOT : REDSLOT);
+        if (rowPos == -1) {
+            printf("Invalid move: %d, %d\n", rowPos, move);
+            continue;
+        }
+        
+        int lastMove[2] = {rowPos, move};
+
+        if (checkLinks(boardPtr, requiredInARow, &lastMove[0], &outputCoords[0][0]) >= 1) { // Check for win
+            printBoard(board);
+            printf("%s wins!\n"WHITE, turn == 0 ? YELLOW"Yellow" : RED"Red");
+            break;
+        } else if (noPossibleMoves(boardPtr)) { // If board is filled it is a draw
+            printBoard(board);
+            printf("The game ended in a draw.");
+            break;
+        }
+        turn = (turn + 1) % 2;
+    }
     return 0;
 }
+
 
 /*
     *board - the 2d array of the board as a pointer
@@ -228,11 +274,21 @@ int makeMove(char *board, int move, char turn) {
 }
 
 int aiMove(char* board_pointer, int difficulty){
+    int choice;
+    
     if (difficulty == 1){
-        return getOkMove(board_pointer); //Moved it back to the function for now because the variable names were messed up here and it wouldn't compile
+      choice = -1;
+    } else if (difficulty == 2){
+      choice = getOkMove(board_pointer);
+    } else if (difficulty == 3){
+      choice = -1;
+    } else if (difficulty == 4){
+      choice = -1;
+    }  
+    if (choice == -1){
+      choice = getRandomMove(board_pointer);
     }
-
-    return 0;
+    return choice;
 }
 
 int getOkMove(char *board) {
@@ -320,4 +376,50 @@ void clearBoard(char* board) {
             *(board + i * COLUMNS + j) = ' ';
         }
     }
+}
+int getColumn() {
+    printf("Enter a column to place your piece: ");
+    int n;
+    scanf("%d", &n);
+    while (n < 1 || n > COLUMNS) {
+        printf("Enter a number between 1 and %d: ", COLUMNS);
+        while (getchar() != '\n');
+        scanf("%d", &n);
+    }
+    return n - 1;
+}
+
+int getRandomMove(char *board) {
+    char boardA[ROWS][COLUMNS];
+    char *boardPtr = &boardA[0][0];
+    copyBoard(board, boardPtr);
+
+    int choice;
+    do {
+        choice = rand() % COLUMNS;
+    }
+    while (makeMove(boardPtr, choice, REDSLOT) == -1);
+    return choice;
+}
+
+int getAIMode() {
+    char duelAI;
+    printf("Do you want to duel an AI (y/n)? ");
+    scanf(" %c", &duelAI);
+    while (duelAI != 'y' && duelAI != 'n') {
+        printf("Please put 'y' or 'n': ");
+        while (getchar() != '\n');
+        scanf(" %c", &duelAI);
+    }
+    if (duelAI == 'n') return -1;
+
+    int n;
+    printf("What mode should it be?\n1. Easy\n2. Normal\n3. Hard\n4. Difficult\n ");
+    scanf("%d", &n);
+    while (n < 1 || n > 4) {
+        printf("Enter a number between 1 and %d: ", COLUMNS);
+        while (getchar() != '\n');
+        scanf("%d", &n);
+    }
+    return n;
 }

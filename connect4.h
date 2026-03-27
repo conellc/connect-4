@@ -6,6 +6,6 @@
 #define COLUMNS 7
 
 // Define these so we can change them anytime
-#define EMPTYSLOT 'n'
-#define YELLOWSLOT 'y'
-#define REDSLOT 'r'
+#define EMPTYSLOT ' '
+#define YELLOWSLOT 'Y'
+#define REDSLOT 'R'

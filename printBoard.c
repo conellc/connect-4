@@ -1,8 +1,6 @@
 #include <stdio.h>
-
-#include "colors.h"
 #include "printBoard.h"
-#include "connect4.h"
+#include "colors.h"
 
 void printBoard(char board[ROWS][COLUMNS]){
 	int rows, cols, bottom, numbers;
@@ -10,7 +8,7 @@ void printBoard(char board[ROWS][COLUMNS]){
 	rows = 0;
 	cols = 0;
 	bottom = 0;
-	numbers = 0;
+	numbers = 1;
 
 	while (rows < ROWS){
 
@@ -18,9 +16,9 @@ void printBoard(char board[ROWS][COLUMNS]){
 
 		while (cols < COLUMNS){
 				cell = board[rows][cols];
-				if (cell == YELLOWSLOT)
+				if (cell == 'Y')
             		printf(YELLOW"©");
-            	else if (cell == REDSLOT)
+            	else if (cell == 'R')
             		printf(RED"®");
 				else
             		printf("%c"RESET, cell);
@@ -51,7 +49,7 @@ void printBoard(char board[ROWS][COLUMNS]){
 
 	printf(" ");
 
-	while (numbers < COLUMNS){
+	while (numbers < COLUMNS+1){
 
 		printf(" %d  ", numbers);
 		numbers++;
@@ -61,3 +59,4 @@ void printBoard(char board[ROWS][COLUMNS]){
 	printf("\n");
 
 }
+
