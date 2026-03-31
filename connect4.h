@@ -2,6 +2,9 @@
     Has the constants for the game that can be used in all files
 */
 
+#ifndef CONNECT4_H
+#define CONNECT4_H
+
 #define ROWS 6
 #define COLUMNS 7
 
@@ -9,3 +12,5 @@
 #define EMPTYSLOT ' '
 #define YELLOWSLOT 'Y'
 #define REDSLOT 'R'
+
+#endif
