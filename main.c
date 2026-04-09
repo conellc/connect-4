@@ -8,6 +8,7 @@
 #include "aiLogic.h"
 #include "boardHelper.h"
 #include "winLogic.h"
+#include "saveBoard.h"
 
 int main(){
 	srand(time(NULL));
@@ -59,5 +60,19 @@ int main(){
         }
         turn = (turn + 1) % 2;
     }
+
+    int saveBoard;
+    printf("Do you want to save the board? (Yes=1, No=0)");
+    scanf("%d", &saveBoard);
+    if (saveBoard == 1) {
+        char name[50];
+        printf("Enter your name: ");
+        scanf("%s", name);
+        FILE *file = fopen("saved_board.txt", "w");
+        fprintf(file, "Player Name: %s\nBoard State:\n", name);
+        printBoardtoFile(board, file);
+        fclose(file);
+    }
+
     return 0;
 }
