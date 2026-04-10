@@ -61,13 +61,14 @@ int main(){
         turn = (turn + 1) % 2;
     }
 
-    int saveBoard;
-    printf("Do you want to save the board? (Yes=1, No=0)");
-    scanf("%d", &saveBoard);
-    if (saveBoard == 1) {
+    char saveBoard;
+    printf("Do you want to save the board? (y/n): ");
+    scanf(" %c", &saveBoard);
+    getchar();
+    if (saveBoard == 'y') {
         char name[50];
-        printf("Enter your name: ");
-        scanf("%s", name);
+        printf("Enter winner name: ");
+        fgets(name, 50, stdin);
         FILE *file = fopen("saved_board.txt", "w");
         fprintf(file, "Player Name: %s\nBoard State:\n", name);
         printBoardtoFile(board, file);
