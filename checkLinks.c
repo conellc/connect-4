@@ -15,7 +15,7 @@ LinksListObject* checkLinks(char* board){
     int linkRow = 0;
     int linkColumn = 0;
     int oneLengthLink = 0; //0 if the slot has no same-color neighbors, 1 otherwise
-    LinksListObject baseLinkConstructor = {{0}, {0}, 0, 0, 0}; //template for baseLink we need to have because of struct initialization weirdness
+    LinksListObject baseLinkConstructor = {{0}, {0}, 0, 0, NONE}; //template for baseLink we need to have because of struct initialization weirdness
     for (row = 0; row < MAX_LINKS; row++){
         baseLinkConstructor.rows[row] = -1;
         baseLinkConstructor.columns[row] = -1;
@@ -38,7 +38,7 @@ LinksListObject* checkLinks(char* board){
 
             //Column check ------------------------------------------------------------
             LinksListObject currentLink = baseLink;
-            currentLink.direction = 1;
+            currentLink.direction = VERTICAL;
             linkRow = row;
             for (linkRow = row; linkRow > 0; linkRow--){
                 if (getBoardSlot(board, linkRow - 1, column) == currentLink.color){
@@ -69,7 +69,7 @@ LinksListObject* checkLinks(char* board){
 
             //Row check -----------------------------------------------------------
             currentLink = baseLink;
-            currentLink.direction = 2;
+            currentLink.direction = HORIZONTAL;
             linkColumn = column;
             for (linkColumn = column; linkColumn > 0; linkColumn--){
                 if (getBoardSlot(board, row, linkColumn - 1) == currentLink.color){
@@ -100,7 +100,7 @@ LinksListObject* checkLinks(char* board){
 
             //NW/SE diagonal check --------------------------------------------------------
             currentLink = baseLink;
-            currentLink.direction = 3;
+            currentLink.direction = NW_SE_DIAGONAL;
             linkRow = row;
             linkColumn = column;
             while (linkRow > 0 && linkColumn > 0){
@@ -138,7 +138,7 @@ LinksListObject* checkLinks(char* board){
 
             //NE/SW diagonal check --------------------------------------------------------
             currentLink = baseLink;
-            currentLink.direction = 4;
+            currentLink.direction = NE_SW_DIAGONAL;
             linkRow = row;
             linkColumn = column;
             while (linkRow > 0 && linkColumn < COLUMNS){
@@ -194,7 +194,7 @@ LinksListObject* checkLinks(char* board){
         }
         linksList[i].linkLength = 0;
         linksList[i].color = EMPTYSLOT;
-        linksList[i].direction = -1;
+        linksList[i].direction = INVALID;
     }
     return linksList;
 }

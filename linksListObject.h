@@ -8,8 +8,17 @@ typedef struct linksListObject{ //Full definition to avoid incomplete type error
     int columns[MAX_LINKS];
     int linkLength;
     char color;
-    int direction;
+    Direction direction;
 } LinksListObject;
+
+typedef enum{
+    INVALID = -1,
+    NONE = 0,
+    VERTICAL = 1,
+    HORIZONTAL = 2,
+    NW_SE_DIAGONAL = 3,
+    NE_SW_DIAGONAL = 4
+} Direction;
 
 LinksListObject LLO_sort(LinksListObject link);
 int LLO_checkEquality(LinksListObject a, LinksListObject b);

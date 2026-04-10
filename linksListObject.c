@@ -2,8 +2,6 @@
 #include "connect4.h"
 #include "linksListObject.h"
 
-void LLO_display(LinksListObject link);
-
 /* Sorts LLO positions by their rows, or by their columns if it's horizontal. */
 LinksListObject LLO_sort(LinksListObject link){
     LinksListObject sortedLink = link;
@@ -13,7 +11,7 @@ LinksListObject LLO_sort(LinksListObject link){
     int lowest_index;
     int last_lowest = -1;
 
-    if (link.direction != 2){
+    if (link.direction != HORIZONTAL){
         for (i = 0; i < link.linkLength; i++){
             lowest = ROWS;
             for (j = 0; j < link.linkLength; j++){
