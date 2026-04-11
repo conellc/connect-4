@@ -3,6 +3,7 @@
 #include "aiLogic.h"
 #include <stdlib.h>
 #include "winLogic.h"
+#include "checkLinks.h"
 
 int aiMove(char* board_pointer, int difficulty){
     int choice;
@@ -73,4 +74,8 @@ int getRandomMove(char *board) {
     }
     while (makeMove(boardPtr, choice, REDSLOT) == -1);
     return choice;
+}
+
+int getBestMove(char *board, LinksListObject *links, int depth){
+    free (links);
 }

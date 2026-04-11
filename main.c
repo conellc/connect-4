@@ -37,7 +37,9 @@ int main(){
                 printf("Your turn\n");
                 move = getColumn();
             } else { // If its the AI's turn
-                move = aiMove(boardPtr, aiDiff);
+                if (aiDiff == 1){getRandomMove(boardPtr);}
+                if (aiDiff == 2){getOkMove(boardPtr);}
+                if (aiDiff - 300 > 0){getBestMove(boardPtr, checkLinks(boardPtr), aiDiff - 300);} //Make sure to free links in getBestMove()
                 rowPos = getRowFromColumn(boardPtr, move);
             }
         }
