@@ -29,8 +29,8 @@ int getAIMode() {
     }
     if (n == 3){
         int depth = 0;
-        while (depth < 1 || depth > 22){
-            printf("Enter in the depth you would like to play on (1-22)\n(Less depth = faster & less accurate, more depth = slower & more accurate): ");
+        while (depth < 1 || depth > 10){
+            printf("Enter in the depth you would like to play on (1-10)\n(Less depth = faster & less accurate, more depth = slower & more accurate): ");
             while (getchar() != '\n');
             scanf("%d", &depth);
         }

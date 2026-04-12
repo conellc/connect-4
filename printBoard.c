@@ -17,9 +17,9 @@ void printBoard(char board[ROWS][COLUMNS]){
 		while (cols < COLUMNS){
 				cell = board[rows][cols];
 				if (cell == 'Y')
-            		printf(YELLOW"©");
+            		printf(YELLOW"O");
             	else if (cell == 'R')
-            		printf(RED"®");
+            		printf(RED"O");
 				else
             		printf("%c"RESET, cell);
 

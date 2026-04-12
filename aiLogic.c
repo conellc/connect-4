@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "winLogic.h"
 #include "checkLinks.h"
+#include "hardAILogicHelper.h"
+#include "printBoard.h"
+#include <stdio.h>
 
 int aiMove(char* board_pointer, int difficulty){
     int choice;
@@ -12,8 +15,8 @@ int aiMove(char* board_pointer, int difficulty){
       choice = -1;
     } else if (difficulty == 2){
       choice = getOkMove(board_pointer);
-    } else if (difficulty == 3){
-      choice = -1; // Change this to call your hard function
+    } else if (difficulty - 300 > 0){
+      choice = getBestMove(board_pointer, difficulty - 300);
     } else if (difficulty == 4){
       choice = -1; // Change this to call your impossible function
     }
@@ -76,6 +79,21 @@ int getRandomMove(char *board) {
     return choice;
 }
 
-int getBestMove(char *board, LinksListObject *links, int depth){
-    free (links);
+int getBestMove(char *board, int depth){
+    int choice = 0;
+    int i;
+    DepthBoard* originalBoard = malloc(sizeof(DepthBoard));
+    
+    originalBoard->currentBoard = (char*)malloc(ROWS * COLUMNS * sizeof(char));
+    copyBoard(board, originalBoard->currentBoard);
+    originalBoard->previousBoard = NULL;
+    originalBoard->depthRemaining = depth;
+    
+    for (i = 0; i < COLUMNS; i++) {
+        originalBoard->nextBoards[i] = NULL;
+    }
+    
+    choice = findMove(originalBoard, 1);
+
+    return choice;
 }
