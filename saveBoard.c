@@ -1,3 +1,7 @@
+/*
+    Ryan R. ported the printboard that Ethan S. made to print to a file.
+*/
+
 #include <stdio.h>
 #include "saveBoard.h"
 

@@ -1,3 +1,8 @@
+/*
+    Functions by: Ryan R.
+    Some edits to getAIMode() by: Carson C.
+*/
+
 #include <stdio.h>
 #include "connect4.h"
 #include "userInput.h"
@@ -19,11 +24,10 @@ int getAIMode() {
            "1. "GREEN"Easy"RESET"\n"
            "2. "YELLOW"Normal"RESET"\n"
            "3. "RED"Hard"RESET"\n"
-           "4. "MAGENTA"Impossible"RESET"\n "
         );
     scanf("%d", &n);
-    while (n < 1 || n > 4) {
-        printf("Enter a number between 1 and %d: ", COLUMNS);
+    while (n < 1 || n > 3) {
+        printf("Enter a number between 1 and 3: ");
         while (getchar() != '\n');
         scanf("%d", &n);
     }

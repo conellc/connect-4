@@ -1,3 +1,7 @@
+/*
+    Functions by: Ryan R.
+*/
+
 #ifndef WINLOGIC_H
 #define WINLOGIC_H
 

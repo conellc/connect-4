@@ -1,3 +1,7 @@
+/*
+    Some helper functions by Ryan R. to make working with the board easier.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "connect4.h"

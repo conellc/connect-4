@@ -1,3 +1,8 @@
+/*
+    Added by: Ryan R.
+*/
+
+
 // Colors for printing
 // How to use: printf(RED"This will be red"WHITE) <- put white after to reset color. it works because you can use seperate strings in printf if they are together. printf("this"" works ""too")
 #define RESET "\e[0m"

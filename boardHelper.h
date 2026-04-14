@@ -1,3 +1,7 @@
+/*
+    Functions by: Ryan R.
+*/
+
 #ifndef BOARDHELPER_H
 #define BOARDHELPER_H
 

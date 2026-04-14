@@ -1,3 +1,9 @@
+/*
+    AI Move base function: Ryan R. and Carson C.
+    Easy & Normal AI: Ryan R.
+    Hard AI: Carson C.
+*/
+
 #include "boardHelper.h"
 #include "connect4.h"
 #include "aiLogic.h"
@@ -17,8 +23,6 @@ int aiMove(char* board_pointer, int difficulty){
       choice = getOkMove(board_pointer);
     } else if (difficulty - 300 > 0){
       choice = getBestMove(board_pointer, difficulty - 300);
-    } else if (difficulty == 4){
-      choice = -1; // Change this to call your impossible function
     }
 
     if (choice < 0 || choice >= COLUMNS){ // Fallback for invalid choice (Chooses random move)

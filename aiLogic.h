@@ -1,3 +1,7 @@
+/*
+    Functions by: Ryan R. and Carson C.
+*/
+
 #ifndef AILOGIC_H
 #define AILOGIC_H
 

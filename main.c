@@ -1,3 +1,8 @@
+/*
+    Main function by: Ethan S. with some help from Ryan R.
+    Board saving by: Ryan R. with help from Ethan S.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

@@ -1,5 +1,6 @@
 /*
     Has the constants for the game that can be used in all files
+    Based on plan.txt
 */
 
 #ifndef CONNECT4_H
