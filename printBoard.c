@@ -1,3 +1,7 @@
+/*
+    All functions in this file are created by: Ethan S
+*/
+
 #include <stdio.h>
 #include "printBoard.h"
 #include "colors.h"

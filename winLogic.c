@@ -1,3 +1,7 @@
+/*
+    Functions by: Ryan R.
+*/
+
 #include "winLogic.h"
 #include "boardHelper.h"
 #include "connect4.h"
